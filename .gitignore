@@ -1,6 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/venv,dotenv,python,node,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=venv,dotenv,python,node,visualstudiocode
 
+src/log-service/zips
+src/log-service/notebook.ipynb
+src/log-service/models
+src/log-service/csv
+
 ### dotenv ###
 # .env
 
@@ -325,7 +330,7 @@ pyvenv.cfg
 pip-selfcheck.json
 
 ### VisualStudioCode ###
-.vscode/*
+.vscode
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
