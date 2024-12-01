@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@grpc/grpc-js": "1.10.8",
+    "@grpc/grpc-js": "^1.12.2",
     "@grpc/proto-loader": "0.7.13",
     "@openfeature/flagd-provider": "0.13.0",
     "@openfeature/server-sdk": "1.14.0",
