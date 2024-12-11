@@ -1,17 +1,17 @@
 import express, { Request, Response } from "express";
-import { getLogger } from "./logger";
+import { getLogger } from "../config/logger";
 import { metrics, Span, trace } from "@opentelemetry/api";
-import User from "./User";
+import User from "../models/User";
 import UserService from "./UserService";
 
 const userController = express.Router();
 const logger = getLogger();
-const tracer = trace.getTracer("user service", "0.1.0");
+const tracer = trace.getTracer("service-a");
 
-const meter = metrics.getMeter("user service", "0.1.0");
+const meter = metrics.getMeter("service-a");
 const totalRequestCounter = meter.createCounter("total-request.counter");
 
-const userService = UserService.getInstance()
+const userService = UserService.getInstance();
 
 // GET: Retrieve all users
 userController.get("/users", (req, res) => {
@@ -67,7 +67,7 @@ userController.post("/users", (req, res) => {
 function putHandler(req: Request) {
   return tracer.startActiveSpan("userPutHandler", (span: Span) => {
     const userId = parseInt(req.params.id);
-    const users = userService.getUsers()
+    const users = userService.getUsers();
     const userIndex = users.findIndex((user) => user.id === userId);
     let data: { status: number; content: any } = { status: -1, content: null };
 
@@ -110,7 +110,7 @@ function patchHandler(req: Request) {
   return tracer.startActiveSpan("userPatchHandler", (span: Span) => {
     let data: { status: number; content: any } = { status: -1, content: null };
     const userId = parseInt(req.params.id);
-    const users = userService.getUsers()
+    const users = userService.getUsers();
     const user = users.find((u) => u.id === userId);
 
     if (user) {
@@ -153,7 +153,7 @@ function deleteHandler(req: Request) {
   return tracer.startActiveSpan("userDeleteHandler", (span: Span) => {
     let data: { status: number; content: any } = { status: -1, content: null };
     const userId = parseInt(req.params.id);
-    const users = userService.getUsers()
+    const users = userService.getUsers();
     const userIndex = users.findIndex((user) => user.id === userId);
 
     if (userIndex !== -1) {

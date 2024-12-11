@@ -10,7 +10,7 @@ const initializeLogger = () => {
  
   logger = createLogger({
     transports: [new LokiTransport({
-        host: "http://loki:3100",
+        host: "http://localhost:3100",
         labels: { app: 'service-a'},
         json: true,
         format: format.json(),

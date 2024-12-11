@@ -6,8 +6,8 @@ import {
   trace,
   Tracer,
 } from "@opentelemetry/api";
-import { getLogger } from "./logger";
-import User from "./User";
+import { getLogger } from "../config/logger";
+import User from "../models/User";
 import UserDao from "./UserDao";
 import { Logger } from "winston";
 
@@ -20,8 +20,8 @@ export default class UserService {
   private userDao = UserDao.getInstance();
   constructor() {
     this.logger = getLogger();
-    this.tracer = trace.getTracer("user dao");
-    this.meter = metrics.getMeter("user dao");
+    this.tracer = trace.getTracer("service-a");
+    this.meter = metrics.getMeter("service-a");
     this.totalRequestCounter = this.meter.createCounter("total-calls.counter");
   }
 

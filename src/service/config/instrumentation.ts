@@ -16,12 +16,12 @@ const sdk = new opentelemetry.NodeSDK({
   }),
   traceExporter: new OTLPTraceExporter({
     // optional - default url is http://localhost:4318/v1/traces
-    url: "http://otel-col:4318/v1/traces",
+    url: "http://localhost:4318/v1/traces",
   }),
   metricReader: new PeriodicExportingMetricReader({
     exporter: new OTLPMetricExporter({
       // url is optional and can be omitted - default is http://localhost:4318/v1/metrics
-      url: "http://otel-col:4318/v1/metrics",
+      url: "http://localhost:4318/v1/metrics",
     }),
   }),
   instrumentations: [getNodeAutoInstrumentations()],
