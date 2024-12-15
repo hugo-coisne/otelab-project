@@ -1,27 +1,27 @@
 import express, { Request, Response } from "express";
 import { getLogger } from "../config/logger";
 import { metrics, Span, trace } from "@opentelemetry/api";
-import User from "../models/User";
-import UserService from "./UserService";
+import Statement from "../models/Statement";
+import StatementService from "./StatementService";
 
-const userController = express.Router();
+const StatementController = express.Router();
 const logger = getLogger();
-const tracer = trace.getTracer("service-a");
+const tracer = trace.getTracer("service-b");
 
-const meter = metrics.getMeter("service-a");
+const meter = metrics.getMeter("service-b");
 const totalRequestCounter = meter.createCounter("total-request.counter");
 
-const userService = UserService.getInstance();
+const statementService = StatementService.getInstance();
 
-// GET: Retrieve all users
-userController.get("/users", async (req, res) => {
-  const histogram = meter.createHistogram("get.users.duration");
+// GET: Retrieve all statements
+StatementController.get("/statements", async (req, res) => {
+  const histogram = meter.createHistogram("get.statements.duration");
   const startTime = new Date().getTime();
 
   totalRequestCounter.add(1);
-  logger.info("Fetching all users.");
-  const users = await userService.getUsers();
-  res.json(users);
+  logger.info("Fetching all statements.");
+  const statements = await statementService.getStatements();
+  res.json(statements);
 
   const endTime = new Date().getTime();
   const executionTime = endTime - startTime;
@@ -30,15 +30,15 @@ userController.get("/users", async (req, res) => {
   histogram.record(executionTime);
 });
 
-// POST: Add a new user
-userController.post("/users", async (req, res) => {
-  const histogram = meter.createHistogram("post.users.duration");
+// POST: Add a new statement
+StatementController.post("/statements", async (req, res) => {
+  const histogram = meter.createHistogram("post.statements.duration");
   const startTime = new Date().getTime();
   totalRequestCounter.add(1);
   
-  const users = await userService.createUser(req.body as User);
-  res.status(200).json(users);
-  logger.info("User successfully added.");
+  const statements = await statementService.createStatement(req.body as Statement);
+  res.status(200).json(statements);
+  logger.info("statement successfully added.");
 
   const endTime = new Date().getTime();
   const executionTime = endTime - startTime;
@@ -47,14 +47,14 @@ userController.post("/users", async (req, res) => {
   histogram.record(executionTime);
 });
 
-// PUT: Replace an existing user by id
-userController.put("/users/:id", async (req, res) => {
-  const histogram = meter.createHistogram("put.users.duration");
+// PUT: Replace an existing statement by id
+StatementController.put("/statements/:id", async (req, res) => {
+  const histogram = meter.createHistogram("put.statements.duration");
   const startTime = new Date().getTime();
 
   totalRequestCounter.add(1);
-  const newUser = await userService.updateUser(req.body as User);
-  res.status(200).json(newUser);
+  const newstatement = await statementService.updateStatement(req.body as Statement);
+  res.status(200).json(newstatement);
   logger.info(`PUT request completed with status 200.`);
 
   const endTime = new Date().getTime();
@@ -64,14 +64,14 @@ userController.put("/users/:id", async (req, res) => {
   histogram.record(executionTime);
 });
 
-// PATCH: Partially update a user by id
-userController.patch("/users/:id", async (req, res) => {
-  const histogram = meter.createHistogram("patch.users.duration");
+// PATCH: Partially update a statement by id
+StatementController.patch("/statements/:id", async (req, res) => {
+  const histogram = meter.createHistogram("patch.statements.duration");
   const startTime = new Date().getTime();
 
   totalRequestCounter.add(1);
-  const newUser = await userService.updateUser(req.body as User);
-  res.status(200).json(newUser);
+  const newstatement = await statementService.updateStatement(req.body as Statement);
+  res.status(200).json(newstatement);
   logger.info(`PATCH request completed with status 200.`);
 
   const endTime = new Date().getTime();
@@ -81,13 +81,13 @@ userController.patch("/users/:id", async (req, res) => {
   histogram.record(executionTime);
 });
 
-userController.delete("/users/:id", async (req, res) => {
-  const histogram = meter.createHistogram("delete.users.duration");
+StatementController.delete("/statements/:id", async (req, res) => {
+  const histogram = meter.createHistogram("delete.statements.duration");
   const startTime = new Date().getTime();
 
   totalRequestCounter.add(1);
-  const deletedUser = userService.deleteUser(req.body as User);
-  res.status(200).json(deletedUser);
+  const deletedstatement = statementService.deleteStatement(req.body as Statement);
+  res.status(200).json(deletedstatement);
   logger.info(`DELETE request completed with status 200.`);
 
   const endTime = new Date().getTime();
@@ -116,7 +116,7 @@ function errorCreator() {
   });
 }
 
-userController.get("/error", (req, res) => {
+StatementController.get("/error", (req, res) => {
   const histogram = meter.createHistogram("GET.error.duration");
   const startTime = new Date().getTime();
 
@@ -132,4 +132,4 @@ userController.get("/error", (req, res) => {
   histogram.record(executionTime);
 });
 
-export default userController;
+export default StatementController;

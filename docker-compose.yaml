@@ -21,6 +21,22 @@ services:
         condition: service_started
     profiles:
       - main
+  
+  service-a-db:
+    image: mysql
+    container_name: a-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root  
+      MYSQL_DATABASE: db         
+      MYSQL_USER: user           
+      MYSQL_PASSWORD: pwd        
+    volumes:
+      - "./src/service/db:/docker-entrypoint-initdb.d"
+    ports:
+      - "3306:3306"
+    profiles:
+      - main
+  
   service-b:
     image: otelab-service-b:latest
     container_name: service-b
@@ -36,6 +52,22 @@ services:
     depends_on:
       otelcol:
         condition: service_started
+    profiles:
+      - main
+
+  
+  service-b-db:
+    image: mysql
+    container_name: b-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root  
+      MYSQL_DATABASE: db         
+      MYSQL_USER: user           
+      MYSQL_PASSWORD: pwd        
+    volumes:
+      - "./src/service-b/db:/docker-entrypoint-initdb.d"
+    ports:
+      - "3306:3307"
     profiles:
       - main
 

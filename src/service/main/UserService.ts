@@ -32,17 +32,40 @@ export default class UserService {
     return this.instance;
   }
 
-  getUsers(): User[] {
-    return this.tracer.startActiveSpan("getUsers", (span: Span) => {
-      const users = this.userDao.getUsers();
+  getUsers() {
+    return this.tracer.startActiveSpan("getUsers", async (span: Span) => {
+      const users = await this.userDao.getUsers();
       span.end();
       return users;
     });
   }
 
-  updateUsers(newUsers: User[]) {
-    return this.tracer.startActiveSpan("updateUsers", (span: Span) => {
-      this.userDao.updateUsers(newUsers);
+  getUserById(id: number) {
+    return this.tracer.startActiveSpan("getUserById", async (span: Span) => {
+      const users = await this.userDao.getUserById(id);
+      span.end();
+      return users;
+    });
+  }
+
+  createUser(user: User) {
+    return this.tracer.startActiveSpan("createUser", async (span: Span) => {
+      const users = await this.userDao.createUser(user);
+      span.end();
+      return users;
+    });
+  }
+
+  updateUser(newUser: User) {
+    return this.tracer.startActiveSpan("updateUser", async (span: Span) => {
+      await this.userDao.updateUser(newUser);
+      span.end();
+    });
+  }
+
+  deleteUser(user: User) {
+    return this.tracer.startActiveSpan("deleteUser", async (span: Span) => {
+      await this.userDao.deleteUser(user);
       span.end();
     });
   }

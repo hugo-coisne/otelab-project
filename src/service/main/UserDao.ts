@@ -18,24 +18,6 @@ export default class UserDao {
   private totalRequestCounter: Counter;
   private static instance: UserDao | undefined;
 
-  private users: User[] = [
-    {
-      id: 1,
-      name: "hugo",
-      surname: "coisne",
-    },
-    {
-      id: 2,
-      name: "leo",
-      surname: "saintier",
-    },
-    {
-      id: 3,
-      name: "fabio",
-      surname: "petrillo",
-    },
-  ];
-
   constructor() {
     this.logger = getLogger();
     this.tracer = trace.getTracer("service-a");
@@ -50,17 +32,94 @@ export default class UserDao {
     return this.instance;
   }
 
-  getUsers() {
+  async getUsers() {
     return this.tracer.startActiveSpan("getUsers", (span: Span) => {
+      const userArray: User[] = [];
+      connection.query("SELECT * FROM user", (err: Error, results: User[]) => {
+        if (err) {
+          this.logger.error(err.stack);
+          return;
+        }
+        results.forEach((value: User) => {
+          userArray.push(value);
+        });
+      });
       span.end();
-      return this.users;
+      return userArray;
     });
   }
 
-  updateUsers(newUsers: User[]) {
-    return this.tracer.startActiveSpan("updateUsers", (span: Span) => {
-      this.users = newUsers;
+  async getUserById(id: number) {
+    return this.tracer.startActiveSpan("getUserById", (span: Span) => {
+      const userArray: User[] = [];
+      connection.query(
+        `SELECT * FROM user WHERE id=${id}`,
+        (err: Error, results: User[]) => {
+          if (err) {
+            this.logger.error(err.stack);
+            return;
+          }
+          results.forEach((value: User) => {
+            userArray.push(value);
+          });
+        }
+      );
       span.end();
+      return userArray[0];
+    });
+  }
+
+  async createUser(user: User) {
+    return this.tracer.startActiveSpan("createUser", (span: Span) => {
+      var result;
+      connection.query(
+        `INSERT INTO user (name, surname) VALUES (${user.name}, ${user.surname})`,
+        (err: Error, results: User[]) => {
+          if (err) {
+            this.logger.error(err.stack);
+            return;
+          }
+          result = results;
+        }
+      );
+      span.end();
+      return result;
+    });
+  }
+
+  async updateUser(user: User) {
+    return this.tracer.startActiveSpan("updateUser", (span: Span) => {
+      var result;
+      connection.query(
+        `UPDATE user SET name = ${user.name}, surname = ${user.surname} WHERE id = ${user.id}`,
+        (err, results) => {
+          if (err) {
+            this.logger.error(err.stack);
+            return;
+          }
+          result = results;
+        }
+      );
+      span.end();
+      return result;
+    });
+  }
+
+  async deleteUser(user: User) {
+    return this.tracer.startActiveSpan("deleteUser", (span: Span) => {
+      var result;
+      connection.query(
+        `DELETE FROM user WHERE id = ${user.id}`,
+        (err, results) => {
+          if (err) {
+            this.logger.error(err.stack);
+            return;
+          }
+          result = results;
+        }
+      );
+      span.end();
+      return result;
     });
   }
 }

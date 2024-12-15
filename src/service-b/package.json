@@ -30,6 +30,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "grpc-js-health-check": "1.1.0",
+    "mysql2": "^3.11.5",
     "otelab-b": "file:",
     "pino-loki": "^2.3.1",
     "ts-node": "^10.9.2",

@@ -4,6 +4,7 @@ import connection from "./config/mysql";
 
 const PORT: number = parseInt(process.env.SERVICE_PORT || "8080");
 const app: Express = express();
+app.use(express.json());
 
 // Connect to the database
 connection.connect((err) => {
