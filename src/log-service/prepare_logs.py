@@ -19,5 +19,4 @@ def prepareLogs():
   with open(prepared_logfile_path, 'w') as prepared_logfile:
     prepared_logfile.writelines(logs)
 
-if __name__=="__main__":
-  prepareLogs()
+prepareLogs()

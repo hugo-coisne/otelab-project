@@ -1,7 +1,6 @@
 import requests
 import json
 from datetime import datetime, timedelta
-import os
 
 # Loki settings
 LOKI_URL = "http://localhost:3100/loki/api/v1/query_range" 
@@ -39,7 +38,6 @@ def get_logs(minutes=1):
 def writeToLogfile(logs):
   now = datetime.now().isoformat()
   formatted_now = now.replace(':','-').replace('.','-')
-  if not os.path.exists('log'): os.mkdir('log')
   with open(f'log/{formatted_now}.log','w') as file:
     for stream in logs:
       for entry in stream['values']:
